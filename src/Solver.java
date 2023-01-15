@@ -36,15 +36,15 @@ public class Solver {
 
         System.out.print("Hand 2: ");
         input = sc.next();
-        System.out.println(input);
+
         b1 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
 
         input = sc.next();
 
         b2 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
 
-        System.out.println(a1.toString() + " " + a2.toString());
-        System.out.println(solve(5));
+//        System.out.println(a1.toString() + " " + a2.toString());
+        solve(5);
     }
 
     private Card[] genCards(int size) {
