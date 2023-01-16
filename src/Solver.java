@@ -1,13 +1,10 @@
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Solver {
     private Card a1, a2, b1, b2;
-    private Card[] cards = new Card[4];
-    private int[] possibleNums = new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
-    private String[] possibleSuits = new String[] {"s", "d", "c", "h"};
+    private ArrayList<Card> cards = new ArrayList<>();
+    private final int[] possibleNums = new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    private final String[] possibleSuits = new String[] {"s", "d", "c", "h"};
 
     public Solver(Card a1, Card a2, Card b1, Card b2) {
         this.a1 = a1;
@@ -21,40 +18,60 @@ public class Solver {
         HashMap<String, Integer> map = new HashMap<>();
         makeMap(map);
 
-        for(int i = 0; i < cards.length; i++) {
+        for(int i = 0; i < 4; i++) {
+            if(i == 0)
+                System.out.print("Hand 1: ");
+            else if(i == 2)
+                System.out.print("Hand 2: ");
+            else
+                System.out.println();
 
+            String input = sc.next();
+
+            cards.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
         }
 
-        System.out.print("Hand 1: ");
-        String input = sc.next();
-
-        a1 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-
-        input = sc.next();
-
-        a2 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-
-        System.out.print("Hand 2: ");
-        input = sc.next();
-
-        b1 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-
-        input = sc.next();
-
-        b2 = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-
-//        System.out.println(a1.toString() + " " + a2.toString());
+//        System.out.print("Hand 1: ");
+//        String input = sc.next();
+//
+//        cards.get(0) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
+//
+//        input = sc.next();
+//
+//        cards.get(1) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
+//
+//        System.out.print("Hand 2: ");
+//        input = sc.next();
+//
+//        cards.get(2) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
+//
+//        input = sc.next();
+//
+//        cards.get(3) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
+//
+////        System.out.println(a1.toString() + " " + a2.toString());
         solve(5);
     }
 
     private Card[] genCards(int size) {
-        Card[] cards = new Card[size];
-        for(int i = 0; i < cards.length; i++) {
+        Card[] middle = new Card[size];
+//        for(int i = 0; i < middle.length; i++) {
+//            int r1 = (int) (Math.random() * 13);
+//            int r2 = (int) (Math.random() * 4);
+//            middle[i] = new Card(possibleNums[r1], possibleSuits[r2]);
+//        }
+        int count = 0;
+        while(count < size) {
             int r1 = (int) (Math.random() * 13);
             int r2 = (int) (Math.random() * 4);
-            cards[i] = new Card(possibleNums[r1], possibleSuits[r2]);
+            Card temp = new Card(possibleNums[r1], possibleSuits[r2]);
+            if(cards.contains(temp))
+                continue;
+            middle[count] = temp;
+            count++;
+            //System.out.println(temp);
         }
-        return cards;
+        return middle;
     }
 
     private Hand bestHand(HashSet<Hand> cards) {
@@ -111,13 +128,13 @@ public class Solver {
         for(int i = 0; i < iterations; i++) {
             Card[] middle = genCards(size);
 
-            Hand hand1 = bestHand(Combination.makeCombination(makeArray(a1, a2, middle), 7, 5));
-            Hand hand2 = bestHand(Combination.makeCombination(makeArray(b1, b2, middle), 7, 5));
+            Hand hand1 = bestHand(Combination.makeCombination(makeArray(cards.get(0), cards.get(1), middle), 7, 5));
+            Hand hand2 = bestHand(Combination.makeCombination(makeArray(cards.get(2), cards.get(3), middle), 7, 5));
 
             int result = hand1.compareTo(hand2);
 
-//            System.out.println(hand1.toString() + "-----------------" + hand2.toString());
-//            System.out.println(result);
+            System.out.println(hand1.toString() + " : " + hand2.toString());
+            System.out.println(result);
 
             if(result > 0)
                 wins1++;
