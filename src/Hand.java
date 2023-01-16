@@ -95,6 +95,7 @@ public class Hand implements Comparable<Hand>{
         rank = new ArrayList<>();
         int count = 1;
         boolean result = false;
+        int x = 0;
         for(int i = 1; i < hand.length; i++) {
             if(hand[i].number == hand[i-1].number)
                 count++;
@@ -105,13 +106,14 @@ public class Hand implements Comparable<Hand>{
                     rank.add(0, hand[j].number);
                 }
                 result = true;
+                x = i;
             }
         }
         if(result) {
             for(int k = hand.length-1; k >= 0; k--) {
 
                 if(hand[k].number < rank.get(2)) {
-                    rank.add(0, hand[k].number);
+                    rank.add(hand[k].number);
                 }
                 else if(hand[k].number > rank.get(2)) {
                     rank.add(hand[k].number);
@@ -149,20 +151,18 @@ public class Hand implements Comparable<Hand>{
     }
 
     public boolean fullHouse() {
-//        rank = new ArrayList<>();
-//        int count = 1;
-//        for(int i = 1; i < hand.length; i++) {
-//            if (hand[i].number == hand[i - 1].number) {
-//                count++;
-//            } else
-//                count = 1;
-//            if(count == 2) {
-//                break;
-//            }
-//        }
-//        if(count == 2 && threeOfAKind()) return true;
-//        return false;
-        return pair() && threeOfAKind() && (rank.get(0) != rank.get(4));
+
+        boolean result = false;
+        if(threeOfAKind()) {
+            int count = 1;
+            if (rank.get(rank.size()-1) == rank.get(rank.size()-2)) {
+                result = true;
+            }
+            if(result && threeOfAKind()) return true;
+        }
+
+        return result;
+        //return pair() && threeOfAKind() && (rank.get(0) != rank.get(4));
     }
 
     public boolean fourOfAKind() {
