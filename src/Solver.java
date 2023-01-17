@@ -1,4 +1,6 @@
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.*;
+import java.text.DecimalFormat;
 
 public class Solver {
     private Card a1, a2, b1, b2;
@@ -17,44 +19,57 @@ public class Solver {
         Scanner sc = new Scanner(System.in);
         HashMap<String, Integer> map = new HashMap<>();
         makeMap(map);
+        String input;
 
-        for(int i = 0; i < 4; i++) {
-            if(i == 0)
-                System.out.print("Hand 1: ");
-            else if(i == 2)
-                System.out.print("Hand 2: ");
-            else
+        boolean go = true;
+        while(go) {
+            cards.clear();
+            for(int i = 0; i < 4; i++) {
+                if(i == 0)
+                    System.out.print("Hand 1: ");
+                else if(i == 2)
+                    System.out.print("Hand 2: ");
+                else
+                    System.out.println();
+
+                input = sc.next();
+
+                cards.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
+            }
+
+            ArrayList<Card> mid = new ArrayList<>();
+
+            System.out.print("Flop? ");
+            input = sc.next();
+
+            if(input.equals("y")) {
                 System.out.println();
+                System.out.print("> ");
 
-            String input = sc.next();
+                for(int i = 0; i < 3; i++) {
+                    input = sc.next();
 
-            cards.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
+                    if(input.equals("n"))
+                        break;
+                    mid.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
+                }
+            }
+
+            solve(5-mid.size(), mid);
+
+            System.out.print("Again? ");
+            input = sc.next();
+
+            if(input.equals("y"))
+                go = true;
+            else
+                go = false;
         }
 
-//        System.out.print("Hand 1: ");
-//        String input = sc.next();
-//
-//        cards.get(0) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-//
-//        input = sc.next();
-//
-//        cards.get(1) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-//
-//        System.out.print("Hand 2: ");
-//        input = sc.next();
-//
-//        cards.get(2) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-//
-//        input = sc.next();
-//
-//        cards.get(3) = new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1)));
-//
-////        System.out.println(a1.toString() + " " + a2.toString());
-        solve(5);
     }
 
     private Card[] genCards(int size) {
-        Card[] middle = new Card[size];
+        Card[] middle = new Card[5];
 //        for(int i = 0; i < middle.length; i++) {
 //            int r1 = (int) (Math.random() * 13);
 //            int r2 = (int) (Math.random() * 4);
@@ -107,34 +122,25 @@ public class Solver {
         map.put("a", 14);
     }
 
-    public double solve(int size) {
+    public double solve(int size, ArrayList<Card> middle) {
 
         double wins1 = 0, wins2 = 0, ties = 0;
         int iterations = 30000;
-//        for(int i = 0; i < 100; i++) {
-//            Card[] middle = genCards(size);
-//            for(Card c : middle) {
-//                System.out.print(c + " ");
-//            }
-//            System.out.println();
-//            System.out.println(a1 + " " + a2);
-//            System.out.println(b1 + " " + b2);
-//            System.out.println(bestHand(Combination.makeCombination(makeArray(a1, a2, middle), 7, 5)));
-//            System.out.println(bestHand(Combination.makeCombination(makeArray(b1, b2, middle), 7, 5)));
-//            System.out.println("===============================");
-//        }
-
 
         for(int i = 0; i < iterations; i++) {
-            Card[] middle = genCards(size);
+            Card[] mid = genCards(size);
 
-            Hand hand1 = bestHand(Combination.makeCombination(makeArray(cards.get(0), cards.get(1), middle), 7, 5));
-            Hand hand2 = bestHand(Combination.makeCombination(makeArray(cards.get(2), cards.get(3), middle), 7, 5));
+            for(int j = 0; j < middle.size(); j++)
+                mid[j+size] = middle.get(j);
+
+
+            Hand hand1 = bestHand(Combination.makeCombination(makeArray(cards.get(0), cards.get(1), mid), 7, 5));
+            Hand hand2 = bestHand(Combination.makeCombination(makeArray(cards.get(2), cards.get(3), mid), 7, 5));
 
             int result = hand1.compareTo(hand2);
 
-            System.out.println(hand1.toString() + " : " + hand2.toString());
-            System.out.println(result);
+//            System.out.println(hand1.toString() + " : " + hand2.toString());
+//            System.out.println(result);
 
             if(result > 0)
                 wins1++;
@@ -143,7 +149,10 @@ public class Solver {
             else
                 ties++;
         }
-        System.out.println("Hand1 win: " + wins1/iterations + ", Hand2 win: " + wins2/iterations + ", Tie: " + ties/iterations);
+        DecimalFormat decFormat = new DecimalFormat("#.##");
+        System.out.println("Hand1 win: " + decFormat.format((wins1/iterations)*100) +
+                "%, Hand2 win: " + decFormat.format((wins2/iterations)*100) +
+                "%, Tie: " + decFormat.format((ties/iterations)*100) + "%");
         return wins1/wins2;
     }
 

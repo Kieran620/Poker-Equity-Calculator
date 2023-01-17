@@ -30,16 +30,30 @@ public class Hand implements Comparable<Hand>{
     }
 
     public int bestHand() {
-        if(straightFlush()) return 8;
+        if(straightFlush()) {
+            //System.out.println("Straight Flush");
+            return 8;
+        }
         else if(fourOfAKind()) return 7;
         else if(fullHouse()) return 6;
-        else if (flush()) return 5;
-        else if(straight()) return 4;
+        else if (flush()) {
+            //System.out.println("Flush");
+            return 5;}
+        else if(straight()) {
+            //System.out.println("Straight");
+            return 4;
+        }
         else if(threeOfAKind()) return 3;
         else if(twoPair()) return 2;
         else if(pair()) return 1;
-        else if(highCard()) return 0;
-        else return -1;
+        else if(highCard()) {
+            //System.out.println("high card");
+            return 0;
+        }
+        else {
+            System.out.println("NOOOOOOOOOOOOOOOOO");
+            return -1;
+        }
     }
 
     public boolean highCard() {
@@ -120,6 +134,19 @@ public class Hand implements Comparable<Hand>{
                 }
             }
         }
+//        boolean result = false;
+//        int count = 1;
+//        for(int i = hand.length-1; i >= 1; i--) {
+//            if(hand[i] == hand[i-1]) {
+//                count++;
+//                rank.add(hand[i].number);
+//            }
+//            else {
+//                count = 1;
+//                rank.clear();
+//            }
+//            if(count == 3)
+//        }
         return result;
     }
 
@@ -127,13 +154,15 @@ public class Hand implements Comparable<Hand>{
         rank = new ArrayList<>();
         boolean result = true;
         for(int i = 1; i < hand.length; i++) {
-            if(hand[i].number != (hand[i-1].number + 1) || (hand[hand.length - 1].compareTo(hand[0]) != 12)) {
-//                if ((hand[hand.length - 1].compareTo(hand[0]) != 12))
+            if(hand[i].number != (hand[i-1].number + 1)) {
+                if (result && i == hand.length-1 && (hand[i].compareTo(hand[0]) == 12))
+                    result = true;
+                else
                     result = false;
             }
-            rank.add(0, hand[i-1].number);
+            rank.add(hand[i-1].number);
         }
-        rank.add(0, hand[hand.length-1].number);
+        rank.add(hand[hand.length-1].number);
         return result;
     }
 
