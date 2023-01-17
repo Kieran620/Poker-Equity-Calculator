@@ -3,17 +3,9 @@ import java.util.*;
 import java.text.DecimalFormat;
 
 public class Solver {
-    private Card a1, a2, b1, b2;
     private ArrayList<Card> cards = new ArrayList<>();
     private final int[] possibleNums = new int[] {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
     private final String[] possibleSuits = new String[] {"s", "d", "c", "h"};
-
-    public Solver(Card a1, Card a2, Card b1, Card b2) {
-        this.a1 = a1;
-        this.a2 = a2;
-        this.b1 = b2;
-        this.b2 = b2;
-    }
 
     public void exec() {
         Scanner sc = new Scanner(System.in);
@@ -53,7 +45,35 @@ public class Solver {
                         break;
                     mid.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
                 }
+
+                System.out.println();
+                System.out.print("Turn? ");
+                input = sc.next();
+
+                if(input.equals("y")) {
+                    System.out.println();
+                    System.out.print("> ");
+
+                    input = sc.next();
+
+                    mid.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
+
+                    System.out.println();
+                    System.out.print("River? ");
+                    input = sc.next();
+
+                    if(input.equals("y")) {
+                        System.out.println();
+                        System.out.print("> ");
+
+                        input = sc.next();
+
+                        mid.add(new Card(map.get(input.substring(0, input.length()-1)), String.valueOf(input.charAt(input.length() - 1))));
+                    }
+                }
             }
+
+
 
             solve(5-mid.size(), mid);
 
@@ -139,7 +159,8 @@ public class Solver {
 
             int result = hand1.compareTo(hand2);
 
-//            System.out.println(hand1.toString() + " : " + hand2.toString());
+            //System.out.println(hand1.toString() + " : " + hand2.toString());
+//            System.out.println(middle.toString());
 //            System.out.println(result);
 
             if(result > 0)

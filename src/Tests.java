@@ -13,7 +13,7 @@ public class Tests {
     }
 
     public void test2() {
-        Solver s = new Solver(null, null, null, null);
+        Solver s = new Solver();
         s.exec();
     }
 }
